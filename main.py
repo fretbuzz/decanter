@@ -68,7 +68,7 @@ def main(argv):
     args = parser.parse_args()
 
     #decanter_alert_cmds = ['python', './dlp_stuff/decanter/main.py', '--csv', './']
-    args.csv = './../../'
+    #args.csv = './../../'
     #args.training = '/Users/jseverin/Documents/Microservices/munnin_snakemake_t2/mimir_v2/analysis_pipeline/dlp_stuff/sockshop_four_100_physical/decanter.log'
     #args.testing = '/Users/jseverin/Documents/Microservices/munnin_snakemake_t2/mimir_v2/analysis_pipeline/dlp_stuff/sockshop_four_100_physical/decanter.log'
     #args.offline = 1
