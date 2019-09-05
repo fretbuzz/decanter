@@ -1,4 +1,5 @@
 from detection import DetectionModule
+import pickle
 
 class EvaluationUtils:
     """
@@ -149,6 +150,11 @@ class EvaluationUtils:
         print timestamps_with_alerts_training
         print "timestamps_with_alerts_testing:\n"
         print timestamps_with_alerts_testing
+        with open('./timestamps_with_alerts_training.txt', 'w') as f:
+            pickle.dump(timestamps_with_alerts_training,f)
+        with open('./timestamps_with_alerts_testing.txt', 'w') as f:
+            pickle.dump(timestamps_with_alerts_testing, f)
+
         print "---------\n"
 
         return tp_reqs, tn_reqs, fn_reqs, fp_reqs
