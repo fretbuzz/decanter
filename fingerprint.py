@@ -86,8 +86,8 @@ class FingerprintGenerator():
         self.counter_req = 0
         pass
 
-    
-    def generate_fingerprint(self, method_cluster, method_name, label):
+
+    def generate_fingerprint(self, method_cluster, method_name, label, fingerprint_to_timestamps):
         """
             Generate the fingerprint from a set of http requests sharing the same user-agent.
             
@@ -130,6 +130,7 @@ class FingerprintGenerator():
         user_agent = []
         language = []
         outgoing_info = 0
+        timestamps = []
         
         # Used for evasion analysis
         is_malicious = '1' if '1' in [m.is_malicious for m in method_cluster] else '0'
@@ -150,6 +151,9 @@ class FingerprintGenerator():
             if http_request.dest_ip != None:
                 if http_request.dest_ip not in ip_dsts:
                     ip_dsts.append(http_request.dest_ip)
+
+            ## add to list of timestamps...
+            timestamps.append(http_request.ts)
 
             # Add user-agent
             if 'user-agent' in http_request.header_values:
@@ -212,7 +216,9 @@ class FingerprintGenerator():
         # Generate Fingerprint for the given cluster of HTTP requests
         finger = Fingerprint(label, user_agent, hosts.items(), ip_dsts, constant_header_fields, language, average_size,
                              outgoing_info, method_name, is_malicious)
-        
+
+        fingerprint_to_timestamps[finger] = timestamps
+
         return finger
         
         

@@ -3,6 +3,7 @@ import datetime
 from label_generation import LabelGenerator
 from fingerprint import Fingerprint, FingerprintGenerator, FingerprintManager 
 from detection import DetectionModule
+import pickle
 
 class HTTPRequest():
     """
@@ -48,7 +49,9 @@ class Aggregator:
     timeout = datetime.timedelta(minutes=10)
     
 
-    def __init__(self, mode=0, offline=0, dump_testing='testing_fingerprints.csv', dump_training='training_fingerprints.csv'):
+    def __init__(self, mode=0, offline=0, dump_testing='testing_fingerprints.csv', dump_training='training_fingerprints.csv',
+                 dump_fingerprint_to_timestamps_training = 'training_fingerprint_to_timestamps.txt',
+                 dump_fingerprint_to_timestamps_testing  = 'testing_fingerprint_to_timestamps.txt'):
         # 0 for Training mode - 1 for Testing mode
         if (mode != 0 and mode != 1) or (offline != 0 and offline != 1):
             raise ValueError('The mode value is not valid. Choose between 1 or 0.')
@@ -62,11 +65,17 @@ class Aggregator:
         self.time_start = None
         self.time_current = None
         self.offline = offline
-        
+        self.fingerprint_to_timestamps_testing = {}
+        self.fingerprint_to_timestamps_training = {}
+
         # Files for offline dumps
         self.dump_testing  = dump_testing
         self.dump_training = dump_training
-        
+
+        # will be used to store the mapping between fingerprints and timestamps...
+        self.dump_fingerprint_to_timestamps_training = dump_fingerprint_to_timestamps_training
+        self.dump_fingerprint_to_timestamps_testing = dump_fingerprint_to_timestamps_testing
+
         # Known browsers
         self.browser_user_agents = set()
         
@@ -94,8 +103,10 @@ class Aggregator:
         """        
         if (self.mode == 0):
             self._training(data)
+            return self.fingerprint_to_timestamps_training
         elif (self.mode == 1):
             self._testing(data)
+            return self.fingerprint_to_timestamps_testing
         else:
             pass
         
@@ -179,14 +190,18 @@ class Aggregator:
         labels, referrerGraph = self.label_generator.generate_label(http_cluster, self.mode, self.browser_user_agents, self.referrerGraphs)
         
         # Training mode
+
         if self.mode == 0:
-            
             for key, value in labels.items():
                 method  = key[0]
                 label   = key[1]
                 cluster = value
-                self.fin_manager.store(host, self.fin_generator.generate_fingerprint(cluster, method, label))
-                
+                self.fin_manager.store(host, self.fin_generator.generate_fingerprint(cluster, method, label,
+                                                                                     self.fingerprint_to_timestamps_training))
+
+                with open(self.dump_fingerprint_to_timestamps_training, 'w') as f:
+                    pickle.dump(self.fingerprint_to_timestamps_training, f)
+
                 # If browser, store to known browser user-agents
                 if label == "Browser":
                     user_agent = http_cluster[0].header_values.get('user-agent', None)
@@ -198,16 +213,20 @@ class Aggregator:
             user_agent = http_cluster[0].header_values.get('user-agent', None)
                     
             self.referrerGraphs[user_agent] = referrerGraph
-            
+
             for key, value in labels.items():
                 method  = key[0]
                 label   = key[1]
                 cluster = value
-                new_fingerprint = self.fin_generator.generate_fingerprint(cluster, method, label)
+                new_fingerprint = self.fin_generator.generate_fingerprint(cluster, method, label,
+                                                                          self.fingerprint_to_timestamps_testing)
             
                 # In OFFLINE mode, dump the generated fingerprints in a .csv file. IN THIS CASE WE APPEND!!!!
                 if self.offline == 1:
                     self.fin_manager.write_fingerprint_to_file(self.dump_testing, new_fingerprint, host)
+
+                    with open(self.dump_fingerprint_to_timestamps_testing, 'w') as f:
+                        pickle.dump(self.fingerprint_to_timestamps_testing, f)
 
                 else:
                     all_training_fingerprints = []

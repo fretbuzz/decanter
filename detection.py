@@ -1,6 +1,7 @@
 import editdistance
 import glob
 from fingerprint import FingerprintManager
+import pickle
 
 class DetectionModule():
     """
@@ -391,13 +392,17 @@ class DetectionModule():
 
 
 class OfflineDetector:
-    def __init__(self, folder_path):
+    def __init__(self, folder_path, dump_fingerprint_to_timestamps_training = 'training_fingerprint_to_timestamps.txt',
+                 dump_fingerprint_to_timestamps_testing  = 'testing_fingerprint_to_timestamps.txt'):
         self.files = glob.glob(folder_path + "*.csv")
         self.files = sorted(self.files, key=lambda tmp: tmp[84:])
         self.training_manager = FingerprintManager()
         self.testing_manager = FingerprintManager()
         self.detector = DetectionModule()
-        
+        self.dump_fingerprint_to_timestamps_training = dump_fingerprint_to_timestamps_training
+        self.dump_fingerprint_to_timestamps_testing = dump_fingerprint_to_timestamps_testing
+        self.fingerprint_to_timestamps_testing = {}
+        self.fingerprint_to_timestamps_training = {}
 
     def _load_from_csv_2(self):
         """
@@ -421,6 +426,14 @@ class OfflineDetector:
         alerts = []
         benign = []
         self._load_from_csv_2()
+
+        # now load the mapping between fingerprints and timestamps...
+        with open(self.dump_fingerprint_to_timestamps_training, 'r') as f:
+            self.fingerprint_to_timestamps_training = pickle.load(f)
+
+        with open(self.dump_fingerprint_to_timestamps_testing, 'r') as f:
+            self.fingerprint_to_timestamps_testing = pickle.load(f)
+
         all_training_fingerprints = []
         total_files = 0
         total_detected = 0
@@ -449,4 +462,5 @@ class OfflineDetector:
                 self.testing_manager.hosts_fingerprints = dict()
         # Uncomment if you want to print on how many files at least an alert has been  triggered.
         #print """{}/{} files detected.""".format(total_detected, total_files)
-        return alerts, benign
+
+        return alerts, benign, self.fingerprint_to_timestamps_training, self.fingerprint_to_timestamps_testing

@@ -4,12 +4,13 @@ class EvaluationUtils:
     """
     This class manages the evaluation output of the performance of DECANTeR.
     """
-    def __init__(self, alerts, benign):
+    def __init__(self, alerts, benign, fingerprint_to_timestamps_training, fingerprint_to_timestamps_testing):
         self.alerts = alerts
         self.benign = benign
         self.unique_fing = self._unique_fingerprints()
-    
-    
+        self.fingerprint_to_timestamps_training = fingerprint_to_timestamps_training
+        self.fingerprint_to_timestamps_testing = fingerprint_to_timestamps_testing
+
     def detection_performance_2(self):
         """
         This method evaluates the true positives (tp), false positives (fp), true negatives (tn), and false negatives (fn).
@@ -42,10 +43,17 @@ class EvaluationUtils:
         tn = []
         fp = []
         fn = []
-        
+
+        timestamps_with_alerts_training = []
+        timestamps_with_alerts_testing = []
+
         for a in self.alerts:
             if int(a.is_malicious) == 1:
                 tp.append(a)
+
+                timestamps_with_alerts_training.extend( self.fingerprint_to_timestamps_training[a] )
+                timestamps_with_alerts_testing.extend( self.fingerprint_to_timestamps_testing[a] )
+
             else:
                 fp.append(a)
         
@@ -131,7 +139,18 @@ class EvaluationUtils:
             True positives:  {:<10}         True negatives:  {:<10}
             False negatives: {:<10}         False positives: {:<10}
         """.format(retrained_tp_reqs, retrained_tn_reqs, retrained_fn_reqs, retrained_fp_reqs)
-        
+
+
+        ## TODO (JOE): print out requests that trigger alerts.... (timestamps + hosts)
+        # (alternatively can log...)
+        print "----------"
+        print "output added by Joe:"
+        print "timestamps_with_alerts_training:\n"
+        print timestamps_with_alerts_training
+        print "timestamps_with_alerts_testing:\n"
+        print timestamps_with_alerts_testing
+        print "---------\n"
+
         return tp_reqs, tn_reqs, fn_reqs, fp_reqs
         
         
