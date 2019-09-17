@@ -4,7 +4,7 @@
 redef record HTTP::Info += {
 	## Write in the log ALL header names and their values
 	header_values: set[string]	&optional	&log;
-	
+
 	## Add the MAC address of origin of the connection
 	mac_orig: string	&optional	&log;
 };
@@ -28,7 +28,7 @@ event http_all_headers (c: connection, is_orig: bool, hlist: mime_header_list)
 			{
 			local concatenate : string;
 			concatenate = hlist[header]$name + "||" + hlist[header]$value;
-			add header_set[concatenate];  
+			add header_set[concatenate];
 			}
 		c$http$header_values = header_set;
 		}
@@ -36,5 +36,4 @@ event http_all_headers (c: connection, is_orig: bool, hlist: mime_header_list)
 		{
 		c$http$mac_orig = c$orig$l2_addr;
 		}
-	}	
-
+	}
