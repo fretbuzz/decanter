@@ -1,5 +1,5 @@
-@load /opt/bro/share/bro/base/protocols/http
-@load /opt/bro/share/bro/base/protocols/conn
+@load /usr/local/Cellar/bro/2.6.1/share/bro/base/protocols/http
+@load /usr/local/Cellar/bro/2.6.1/share/bro/base/protocols/conn
 
 redef record HTTP::Info += {
 	## Write in the log ALL header names and their values

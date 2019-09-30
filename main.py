@@ -12,9 +12,11 @@ def dumped_fingerprint_analysis(path):
     # Run detection on the loaded CSV files in path.
     # Files with filename having the string "training" are used for training.
     # Those with "testing" are used for testing.
+    print "about_to_start_run_detection_2"
     alerts, benign, fingerprint_to_timestamps_training, fingerprint_to_timestamps_testing = o.run_detection_2()
 
     # Run the classification performance evaluation.
+    print "about_to_start_EvaluationUtils"
     e = EvaluationUtils(alerts, benign, fingerprint_to_timestamps_training, fingerprint_to_timestamps_testing)
     e.output_requests()
     e.detection_performance_2()
@@ -29,7 +31,10 @@ def dumped_fingerprint_analysis(path):
 
 def log_fingerprint_analysis(training_log, testing_log, offline):
     bp = BroParser()
+    #print "parsing the "
+    print "parsing_training_log..."
     training = bp.parseFile(training_log)
+    print "parsing_testing_log..."
     testing = bp.parseFile(testing_log)
     
     # Initialize the aggregator.
@@ -38,6 +43,7 @@ def log_fingerprint_analysis(training_log, testing_log, offline):
     decanter_trainer = Aggregator(0, offline)
     
     # Fingerprint training based on training_log
+    print "analyzing_training_log..."
     fingerprint_to_timestamps_training = decanter_trainer.analyze_log(training)
 
     # Aggregator switches mode from training to testing (0 --> 1).
@@ -46,8 +52,10 @@ def log_fingerprint_analysis(training_log, testing_log, offline):
     # Extract Fingerprints from testing_log
     # If online (i.e., 0), Fingerprints are tested against trained Fingerprints
     # If offline (i.e., 1), testing and training fingerprints are dumped in seperate csv files.
+    print "analyzing_testing_log..."
     fingerprint_to_timestamps_testing = decanter_trainer.analyze_log(testing)
 
+    print "running_EvaluationUtils"
     e = EvaluationUtils(decanter_trainer.alerts, [], fingerprint_to_timestamps_training, fingerprint_to_timestamps_testing)
     e._unique_fingerprints()
     
@@ -74,9 +82,11 @@ def main(argv):
     #args.offline = 1
 
     if args.csv != None:
+        print "dumping fingerprint analysis (so creating the csvs...)"
         dumped_fingerprint_analysis(args.csv)
 
     if args.training != None and args.testing != None and (args.offline != None):
+        print "using the prexisting fingerprints (contained in the CSV files...)"
         log_fingerprint_analysis(args.training, args.testing, args.offline)
     
 

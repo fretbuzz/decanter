@@ -427,12 +427,18 @@ class OfflineDetector:
         benign = []
         self._load_from_csv_2()
 
+        print "loading__fingerprint_to_timestamps_training"
+
         # now load the mapping between fingerprints and timestamps...
         with open(self.dump_fingerprint_to_timestamps_training, 'r') as f:
             self.fingerprint_to_timestamps_training = pickle.load(f)
 
+        print "loading__fingerprint_to_timestamps_testing"
+
         with open(self.dump_fingerprint_to_timestamps_testing, 'r') as f:
             self.fingerprint_to_timestamps_testing = pickle.load(f)
+
+        print "all_fingerprint_to_timestamp_mappings_loaded"
 
         all_training_fingerprints = []
         total_files = 0
