@@ -172,14 +172,19 @@ class ReferrerGraph:
                 Graph object linked using referrer header fields.
                 
             """
-        
+        print "---------"
+        print "sorting clustser in _createGraph_ in label_generation.py"
         sorted_cluster = sorted(cluster, key=lambda request: request.ts)
-        
+        print "cluster is sorted!"
+
         graph = nx.DiGraph()
 
         headNodes = list()
 
-        for request in sorted_cluster:
+        num_of_requests = len(sorted_cluster)
+        for counter, request in enumerate(sorted_cluster):
+            print "in current cluster, processing request ", counter, " of ", num_of_requests
+
             """ Case of head node """
             if self._isHeadNode_(request):
                 headNodes.append(request)

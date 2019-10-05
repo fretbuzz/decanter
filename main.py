@@ -82,11 +82,11 @@ def main(argv):
     #args.offline = 1
 
     if args.csv != None:
-        print "dumping fingerprint analysis (so creating the csvs...)"
+        print "using the prexisting fingerprints (contained in the CSV files...)"
         dumped_fingerprint_analysis(args.csv)
 
     if args.training != None and args.testing != None and (args.offline != None):
-        print "using the prexisting fingerprints (contained in the CSV files...)"
+        print "dumping fingerprint analysis (so creating the csvs...)"
         log_fingerprint_analysis(args.training, args.testing, args.offline)
     
 
