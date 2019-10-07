@@ -183,7 +183,7 @@ class ReferrerGraph:
 
         num_of_requests = len(sorted_cluster)
         for counter, request in enumerate(sorted_cluster):
-            print "in current cluster, processing request ", counter, " of ", num_of_requests, request.src, request.dst
+            print "in current cluster, processing request ", counter, " of ", num_of_requests#, request.src, request.dst
 
             """ Case of head node """
             if self._isHeadNode_(request):
