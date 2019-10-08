@@ -3,6 +3,7 @@ import pandas as pd
 import networkx as nx
 from urlparse import urlparse
 import editdistance
+import time
 
 class ReferrerGraph:
     """
@@ -183,7 +184,8 @@ class ReferrerGraph:
 
         num_of_requests = len(sorted_cluster)
         for counter, request in enumerate(sorted_cluster):
-            print "in current cluster, processing request ", counter, " of ", num_of_requests, request.orig_ip, request.dest_ip
+            print "in current cluster, processing request ", counter, " of ", num_of_requests, ";", request.orig_ip, request.dest_ip, end_time - start_time
+            start_time = time.time()
 
             """ Case of head node """
             if self._isHeadNode_(request):
@@ -195,6 +197,7 @@ class ReferrerGraph:
                 if self._isLinked_(request, headNode):
                     graph.add_edge(headNode, request)
                     break
+            end_time = time.time()
 
         return graph
     
