@@ -199,6 +199,7 @@ class ReferrerGraph:
                 if self._isLinked_(request, headNode):
                     graph.add_edge(headNode, request)
                     break
+
             end_time = time.time()
 
         return graph

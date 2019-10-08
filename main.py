@@ -4,7 +4,7 @@ from evaluation_utils import EvaluationUtils
 from detection import OfflineDetector
 import sys
 import argparse
-
+import pyximport; pyximport.install()
 
 def dumped_fingerprint_analysis(path):
     o = OfflineDetector(path)
