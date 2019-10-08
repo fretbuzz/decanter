@@ -186,7 +186,7 @@ class ReferrerGraph:
         start_time = time.time()
         num_of_requests = len(sorted_cluster)
         for counter, request in enumerate(sorted_cluster):
-            print "in current cluster, processing request ", counter, " of ", num_of_requests, ";", request.orig_ip, request.dest_ip, end_time - start_time
+            print "in current cluster, processing request ", counter, " of ", num_of_requests, ";", request.orig_ip, request.dest_ip, end_time - start_time, len(headNodes)
             start_time = time.time()
 
             """ Case of head node """
