@@ -1,10 +1,10 @@
+import pyximport; pyximport.install(pyimport=True)
 from bro_parser import BroParser
 from decanter_new import Aggregator
 from evaluation_utils import EvaluationUtils
 from detection import OfflineDetector
 import sys
 import argparse
-import pyximport; pyximport.install(pyimport=True)
 
 def dumped_fingerprint_analysis(path):
     o = OfflineDetector(path)
