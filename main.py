@@ -1,6 +1,6 @@
 from bro_parser import BroParser
-import pyximport; pyximport.install(pyimport=True)
 from decanter_new import Aggregator
+import pyximport; pyximport.install(pyimport=True)
 from evaluation_utils import EvaluationUtils
 from detection import OfflineDetector
 import sys
