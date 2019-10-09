@@ -1,5 +1,5 @@
 from bro_parser import BroParser
-import pyximport; pyximport.install(pyimport=True)
+#import pyximport; pyximport.install()
 from decanter_new import Aggregator
 # works if cython is here...
 from evaluation_utils import EvaluationUtils
