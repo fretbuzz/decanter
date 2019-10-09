@@ -41,8 +41,8 @@ class BroParser:
             
             """       
         try:
-		    return dict((x, y) for x, y in list(map( lambda entry:(entry.split('||')[0].lower(), entry.split('||')[1].replace('\\x2c', ',')),headerValues.split(','))))
+            return dict((x, y) for x, y in list(map( lambda entry:(entry.split('||')[0].lower(), entry.split('||')[1].replace('\\x2c', ',')),headerValues.split(','))))
         except:
-		    return {}
+            return {}
 
 
